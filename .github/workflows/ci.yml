@@ -1,0 +1,52 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Verify Application & Build
+    runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=public"
+      BETTER_AUTH_SECRET: "super-secret-development-key-32-chars-minimum-length"
+      BETTER_AUTH_URL: "http://localhost:3000"
+      NODE_ENV: "test"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies from lockfile
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: npm run db:generate
+
+      - name: Validate environment variables
+        run: npm run check-env
+
+      - name: TypeScript Type Checking
+        run: npm run typecheck
+
+      - name: ESLint Code Quality
+        run: npm run lint
+
+      - name: Prettier Formatting Check
+        run: npm run format:check
+
+      - name: Run Vitest Unit Tests
+        run: npm run test
+
+      - name: Build Next.js Application
+        run: npm run build
