@@ -184,7 +184,7 @@ test("copy button works", async ({ page, context }) => {
 
   // Read clipboard content
   const clipboardContent = await page.evaluate(() =>
-    navigator.clipboard.readText(),
+    navigator.clipboard.readText()
   );
 
   expect(clipboardContent).toContain("https://example.com/share/");
@@ -371,7 +371,7 @@ test("handles camera access error", async ({ page }) => {
 
   await expect(page.getByText("Camera access denied")).toBeVisible();
   await expect(
-    page.getByRole("button", { name: "Join Audio Only" }),
+    page.getByRole("button", { name: "Join Audio Only" })
   ).toBeVisible();
 });
 ```

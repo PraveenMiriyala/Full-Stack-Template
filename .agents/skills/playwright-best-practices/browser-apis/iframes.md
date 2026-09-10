@@ -148,7 +148,7 @@ await level3.getByText("Deep content").click();
 // Helper to search all frames for an element
 async function findInAnyFrame(
   page: Page,
-  selector: string,
+  selector: string
 ): Promise<Locator | null> {
   // Check main page first
   const mainCount = await page.locator(selector).count();
@@ -347,7 +347,7 @@ test("handle iframe load failure", async ({ page }) => {
     // Fallback: refresh iframe
     await page.evaluate(() => {
       const iframe = document.querySelector(
-        "#unreliable-frame",
+        "#unreliable-frame"
       ) as HTMLIFrameElement;
       if (iframe) iframe.src = iframe.src;
     });

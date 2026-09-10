@@ -24,7 +24,7 @@ await page.context().storageState({ path: ".auth/session.json" });
 // Reuse in config — every test starts authenticated
 {
   use: {
-    storageState: ".auth/session.json"
+    storageState: ".auth/session.json";
   }
 }
 
@@ -384,9 +384,7 @@ test("login via mocked OAuth flow", async ({ page }) => {
 // tests/oauth-login.spec.ts — API-based session injection
 import { test, expect } from "@playwright/test";
 
-test("bypass OAuth entirely via API session injection", async ({
-  page,
-}) => {
+test("bypass OAuth entirely via API session injection", async ({ page }) => {
   // Call a test-only endpoint that creates a session without OAuth
   const response = await page.request.post("/api/test/create-session", {
     data: {

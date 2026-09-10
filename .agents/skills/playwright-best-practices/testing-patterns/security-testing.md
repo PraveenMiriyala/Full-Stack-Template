@@ -108,7 +108,7 @@ test("forms include CSRF token", async ({ page }) => {
 
   // Check form has CSRF token
   const csrfInput = page.locator(
-    'input[name="_csrf"], input[name="csrf_token"]',
+    'input[name="_csrf"], input[name="csrf_token"]'
   );
   await expect(csrfInput).toBeAttached();
 
@@ -221,7 +221,7 @@ test("handles concurrent session limit", async ({ browser }) => {
   // First session should be invalidated (or warning shown)
   await page1.reload();
   await expect(
-    page1.getByText(/session.*another device|logged out/i),
+    page1.getByText(/session.*another device|logged out/i)
   ).toBeVisible();
 
   await context1.close();
@@ -275,7 +275,7 @@ test.describe("authorization", () => {
     expect(
       (await page.getByText("Access denied").isVisible()) ||
         (await page.url()).includes("/login") ||
-        (await page.url()).includes("/403"),
+        (await page.url()).includes("/403")
     ).toBe(true);
 
     await context.close();

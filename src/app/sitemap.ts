@@ -20,18 +20,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.8,
     },
-    {
-      url: `${baseUrl}/dashboard`,
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
   ];
 
   try {
     const payload = await getPayloadClient();
 
-    // Fetch published pages
+    // Fetch published, indexable pages
     const pagesResult = await payload.find({
       collection: "pages",
       where: {
@@ -41,14 +35,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     });
 
-    const pageRoutes: MetadataRoute.Sitemap = pagesResult.docs.map((page) => ({
-      url: `${baseUrl}/${page.slug}`,
-      lastModified: new Date(page.updatedAt),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    }));
+    const pageRoutes: MetadataRoute.Sitemap = pagesResult.docs
+      .filter((page) => {
+        const seo = (page as Record<string, unknown>).seo as
+          { noIndex?: boolean } | undefined;
+        return !seo?.noIndex && page.slug !== "home" && page.slug !== "index";
+      })
+      .map((page) => ({
+        url: `${baseUrl}/${page.slug}`,
+        lastModified: new Date(page.updatedAt),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      }));
 
-    // Fetch published blog posts
+    // Fetch published, indexable blog posts
     const postsResult = await payload.find({
       collection: "posts",
       where: {
@@ -58,12 +58,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       },
     });
 
-    const postRoutes: MetadataRoute.Sitemap = postsResult.docs.map((post) => ({
-      url: `${baseUrl}/blog/${post.slug}`,
-      lastModified: new Date(post.updatedAt),
-      changeFrequency: "weekly",
-      priority: 0.7,
-    }));
+    const postRoutes: MetadataRoute.Sitemap = postsResult.docs
+      .filter((post) => {
+        const seo = (post as Record<string, unknown>).seo as
+          { noIndex?: boolean } | undefined;
+        return !seo?.noIndex;
+      })
+      .map((post) => ({
+        url: `${baseUrl}/blog/${post.slug}`,
+        lastModified: new Date(post.updatedAt),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      }));
 
     return [...staticRoutes, ...pageRoutes, ...postRoutes];
   } catch {

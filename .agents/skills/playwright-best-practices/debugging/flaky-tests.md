@@ -91,11 +91,11 @@ Add comprehensive event logging to expose timing issues:
 ```typescript
 test.beforeEach(async ({ page }) => {
   page.on("console", (msg) =>
-    console.log(`CONSOLE [${msg.type()}]:`, msg.text()),
+    console.log(`CONSOLE [${msg.type()}]:`, msg.text())
   );
   page.on("pageerror", (err) => console.error("PAGE ERROR:", err.message));
   page.on("requestfailed", (req) =>
-    console.error(`REQUEST FAILED: ${req.url()}`),
+    console.error(`REQUEST FAILED: ${req.url()}`)
   );
 });
 ```
@@ -190,9 +190,7 @@ await expect(page.locator(".data-row")).toHaveCount(10, { timeout: 10000 });
 // ✅ BETTER: Wait for network response, then assert
 const responsePromise = page.waitForResponse(
   (r) =>
-    r.url().includes("/api/data") &&
-    r.request().method() === "GET" &&
-    r.ok(),
+    r.url().includes("/api/data") && r.request().method() === "GET" && r.ok()
 );
 await page.click("#load-data");
 await responsePromise;
@@ -363,17 +361,17 @@ export default defineConfig({
 test.beforeEach(async ({ page }) => {
   // Stub unstable third-party APIs
   await page.route("**/api.analytics.com/**", (route) =>
-    route.fulfill({ body: "" }),
+    route.fulfill({ body: "" })
   );
   await page.route("**/api.payment-provider.com/**", (route) =>
-    route.fulfill({ json: { status: "ok" } }),
+    route.fulfill({ json: { status: "ok" } })
   );
 });
 
 // Test-specific stub
 test("checkout with payment", async ({ page }) => {
   await page.route("**/api/payment", (route) =>
-    route.fulfill({ json: { success: true, transactionId: "test-123" } }),
+    route.fulfill({ json: { success: true, transactionId: "test-123" } })
   );
   // Test proceeds with deterministic response
 });

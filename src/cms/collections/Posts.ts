@@ -6,6 +6,12 @@ export const Posts: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "category", "_status", "updatedAt"],
+    preview: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : "";
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      return `${baseUrl}/api/draft?secret=${process.env.PAYLOAD_SECRET}&slug=${slug}&collection=posts`;
+    },
   },
   versions: {
     drafts: true,

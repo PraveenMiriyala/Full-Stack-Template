@@ -28,18 +28,15 @@ export default buildConfig({
   collections: [Users, Pages, Posts, Categories, Media, Redirects],
   globals: [SiteSettings, HeaderNavigation, FooterGlobal],
   editor: lexicalEditor({}),
-  secret:
-    process.env.PAYLOAD_SECRET ||
-    "payload-secret-at-least-32-characters-long-key",
+  secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },
   db: postgresAdapter({
     pool: {
       connectionString:
-        process.env.PAYLOAD_DATABASE_URI ||
-        process.env.DATABASE_URL ||
-        "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=payload",
+        process.env.PAYLOAD_DATABASE_URI || process.env.DATABASE_URL || "",
     },
+    schemaName: process.env.PAYLOAD_SCHEMA_NAME || "payload",
   }),
 });

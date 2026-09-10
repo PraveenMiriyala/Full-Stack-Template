@@ -397,7 +397,7 @@ test("application menu", async ({ electronApp }) => {
     const menu = Menu.getApplicationMenu();
     const fileMenu = menu?.items.find((item) => item.label === "File");
     const newItem = fileMenu?.submenu?.items.find(
-      (item) => item.label === "New",
+      (item) => item.label === "New"
     );
     newItem?.click();
   });
@@ -477,7 +477,7 @@ export const test = base.extend({
         "MyApp.app",
         "Contents",
         "MacOS",
-        "MyApp",
+        "MyApp"
       );
     } else if (process.platform === "win32") {
       executablePath = path.join(distPath, "win-unpacked", "MyApp.exe");

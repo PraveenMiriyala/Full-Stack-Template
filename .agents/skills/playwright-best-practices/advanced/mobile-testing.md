@@ -114,7 +114,7 @@ import { test as base, Page } from "@playwright/test";
 type TouchFixtures = {
   swipe: (
     element: Locator,
-    direction: "left" | "right" | "up" | "down",
+    direction: "left" | "right" | "up" | "down"
   ) => Promise<void>;
 };
 
@@ -210,7 +210,7 @@ test("pinch to zoom image", async ({ page }) => {
         new WheelEvent("wheel", {
           deltaY: -100, // Negative = zoom in
           ctrlKey: true, // Ctrl+wheel = pinch on many apps
-        }),
+        })
       );
     }
   });

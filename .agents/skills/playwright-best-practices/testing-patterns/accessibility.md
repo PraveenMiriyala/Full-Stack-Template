@@ -76,7 +76,7 @@ export const test = base.extend<A11yFixtures>({
         "wcag2aa",
         "wcag21a",
         "wcag21aa",
-      ]),
+      ])
     );
   },
 });
@@ -257,7 +257,7 @@ test("focus trapped in modal", async ({ page }) => {
 
   // Get all focusable elements in modal
   const focusableElements = modal.locator(
-    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
   );
   const count = await focusableElements.count();
 
@@ -314,7 +314,7 @@ test("respects reduced motion preference", async ({ page }) => {
   // Animations should be disabled
   const hero = page.getByTestId("hero-animation");
   const animation = await hero.evaluate(
-    (el) => getComputedStyle(el).animationDuration,
+    (el) => getComputedStyle(el).animationDuration
   );
 
   expect(animation).toBe("0s");

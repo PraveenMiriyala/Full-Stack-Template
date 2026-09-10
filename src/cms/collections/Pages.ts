@@ -13,6 +13,12 @@ export const Pages: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "_status", "updatedAt"],
+    preview: (doc) => {
+      const slug = typeof doc?.slug === "string" ? doc.slug : "";
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+      return `${baseUrl}/api/draft?secret=${process.env.PAYLOAD_SECRET}&slug=${slug}&collection=pages`;
+    },
   },
   versions: {
     drafts: true,

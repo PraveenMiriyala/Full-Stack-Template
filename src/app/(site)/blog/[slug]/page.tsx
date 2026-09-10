@@ -1,8 +1,10 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { getPayloadClient } from "@/lib/payload";
 import { Badge } from "@/components/ui/badge";
+import { LexicalRichText } from "@/cms/renderers/LexicalRichText";
 import { siteConfig } from "@/config/site";
 
 export const dynamic = "force-dynamic";
@@ -61,7 +63,7 @@ export async function generateMetadata({
       title: `${title} | Blog`,
       description,
       alternates: {
-        canonical: seo?.canonicalUrl,
+        canonical: seo?.canonicalUrl || `${siteConfig.url}/blog/${slug}`,
       },
       robots: {
         index: !seo?.noIndex,
@@ -83,6 +85,7 @@ export default async function BlogPostPage({
 }: PostPageProps) {
   const { slug } = await params;
   const { draft } = await searchParams;
+  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
 
   try {
     const payload = await getPayloadClient();
@@ -93,7 +96,8 @@ export default async function BlogPostPage({
           equals: slug,
         },
       },
-      draft: draft === "true",
+      draft: isDraftMode,
+      overrideAccess: isDraftMode,
       limit: 1,
     });
 
@@ -153,14 +157,8 @@ export default async function BlogPostPage({
           </p>
         )}
 
-        <div className="prose dark:prose-invert max-w-none pt-4">
-          {typeof post.content === "string" ? (
-            <div dangerouslySetInnerHTML={{ __html: post.content }} />
-          ) : (
-            <pre className="overflow-auto rounded bg-muted p-4 text-xs">
-              {JSON.stringify(post.content, null, 2)}
-            </pre>
-          )}
+        <div className="pt-4">
+          <LexicalRichText content={post.content} />
         </div>
       </article>
     );

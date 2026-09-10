@@ -203,7 +203,7 @@ test("popup remembers state", async ({ context, extensionId }) => {
 
   // State should persist
   await expect(
-    popup2.getByRole("checkbox", { name: "Dark Mode" }),
+    popup2.getByRole("checkbox", { name: "Dark Mode" })
   ).toBeChecked();
 });
 ```
@@ -317,7 +317,7 @@ test("content script injects UI", async ({ context }) => {
   // Interact with injected UI
   await page.locator("#my-extension-widget button").click();
   await expect(page.locator("#my-extension-widget .result")).toHaveText(
-    "Success",
+    "Success"
   );
 });
 ```
@@ -453,7 +453,7 @@ test("context menu actions", async ({ context, extensionId }) => {
     // Simulate the click handler
     chrome.contextMenus.onClicked.dispatch(
       { menuItemId: "test-menu", selectionText: "selected text" },
-      { id: 1, url: "https://example.com" },
+      { id: 1, url: "https://example.com" }
     );
   });
 });

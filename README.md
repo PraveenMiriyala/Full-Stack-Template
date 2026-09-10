@@ -9,6 +9,7 @@ A production-ready, reusable full-stack web application starter template built w
 Get your local development environment running in **5 simple steps**:
 
 ### Prerequisites
+
 - **Node.js**: v20.x, v22.x, or v24.x LTS
 - **npm**: v10.x or v11.x
 - **Docker Desktop**: (Optional, for running PostgreSQL locally via Docker Compose) or an active local PostgreSQL server.
@@ -36,9 +37,10 @@ Copy the example environment file:
 cp .env.example .env
 ```
 
-*(The default `.env.example` settings are pre-configured to work out of the box with the local Docker PostgreSQL container).*
+_(The default `.env.example` settings are pre-configured to work out of the box with the local Docker PostgreSQL container)._
 
 You can validate your environment variables at any time:
+
 ```bash
 npm run check-env
 ```
@@ -48,10 +50,12 @@ npm run check-env
 ### Step 3: Start Local PostgreSQL Database
 
 If using Docker Compose:
+
 ```bash
 npm run db:up
 ```
-*This starts a local PostgreSQL instance running on `localhost:5432` with database `my_app_db`.*
+
+_This starts a local PostgreSQL instance running on `localhost:5432` with database `my_app_db`._
 
 ---
 
@@ -81,14 +85,14 @@ Your app is now running locally!
 
 ## 🔗 Default Local URLs & Credentials
 
-| Resource | URL | Credentials / Notes |
-| :--- | :--- | :--- |
-| **Public Web Application** | [http://localhost:3000](http://localhost:3000) | Main landing page & responsive layout |
-| **Payload CMS Admin Dashboard** | [http://localhost:3000/admin](http://localhost:3000/admin) | **Email:** `admin@example.com`<br>**Password:** `AdminPassword123!` |
-| **Public App User Sign In** | [http://localhost:3000/sign-in](http://localhost:3000/sign-in) | Powered by Better Auth |
-| **Dynamic Blog** | [http://localhost:3000/blog](http://localhost:3000/blog) | Published blog posts from Payload |
-| **Dynamic Sitemap** | [http://localhost:3000/sitemap.xml](http://localhost:3000/sitemap.xml) | Automated SEO canonical sitemap |
-| **Robots Configuration** | [http://localhost:3000/robots.txt](http://localhost:3000/robots.txt) | Automated robots.txt handler |
+| Resource                        | URL                                                                    | Credentials / Notes                                                 |
+| :------------------------------ | :--------------------------------------------------------------------- | :------------------------------------------------------------------ |
+| **Public Web Application**      | [http://localhost:3000](http://localhost:3000)                         | Main landing page & responsive layout                               |
+| **Payload CMS Admin Dashboard** | [http://localhost:3000/admin](http://localhost:3000/admin)             | **Email:** `admin@example.com`<br>**Password:** `AdminPassword123!` |
+| **Public App User Sign In**     | [http://localhost:3000/sign-in](http://localhost:3000/sign-in)         | Powered by Better Auth                                              |
+| **Dynamic Blog**                | [http://localhost:3000/blog](http://localhost:3000/blog)               | Published blog posts from Payload                                   |
+| **Dynamic Sitemap**             | [http://localhost:3000/sitemap.xml](http://localhost:3000/sitemap.xml) | Automated SEO canonical sitemap                                     |
+| **Robots Configuration**        | [http://localhost:3000/robots.txt](http://localhost:3000/robots.txt)   | Automated robots.txt handler                                        |
 
 ---
 
@@ -114,26 +118,26 @@ Your app is now running locally!
 
 ## 💻 NPM Scripts Reference
 
-| Command | Description |
-| :--- | :--- |
-| `npm run dev` | Start Next.js development server on `http://localhost:3000` |
-| `npm run build` | Generate Prisma Client and build optimized Next.js + Payload production bundle |
-| `npm run start` | Start Next.js production server |
-| `npm run check-env` | Validate `.env` variables against Zod schema |
-| `npm run typecheck` | Execute strict TypeScript type checker (`tsc --noEmit`) |
-| `npm run lint` | Run ESLint checks |
-| `npm run format` | Auto-format code with Prettier |
-| `npm run format:check` | Verify code formatting with Prettier |
-| `npm run test` | Run Vitest unit tests |
-| `npm run test:e2e` | Run Playwright end-to-end browser tests |
-| `npm run check` | Run full automated quality suite (`check-env` -> `typecheck` -> `lint` -> `format:check` -> `test` -> `build`) |
-| `npm run db:up` | Start local PostgreSQL Docker container |
-| `npm run db:down` | Stop local PostgreSQL Docker container |
-| `npm run db:migrate` | Apply Prisma database migrations |
-| `npm run db:push` | Push Prisma schema directly to DB |
-| `npm run db:studio` | Launch Prisma Studio GUI |
-| `npm run db:generate` | Generate Prisma Client |
-| `npm run cms:seed` | Seed initial CMS admin user and sample content |
+| Command                | Description                                                                                                    |
+| :--------------------- | :------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`          | Start Next.js development server on `http://localhost:3000`                                                    |
+| `npm run build`        | Generate Prisma Client and build optimized Next.js + Payload production bundle                                 |
+| `npm run start`        | Start Next.js production server                                                                                |
+| `npm run check-env`    | Validate `.env` variables against Zod schema                                                                   |
+| `npm run typecheck`    | Execute strict TypeScript type checker (`tsc --noEmit`)                                                        |
+| `npm run lint`         | Run ESLint checks                                                                                              |
+| `npm run format`       | Auto-format code with Prettier                                                                                 |
+| `npm run format:check` | Verify code formatting with Prettier                                                                           |
+| `npm run test`         | Run Vitest unit tests                                                                                          |
+| `npm run test:e2e`     | Run Playwright end-to-end browser tests                                                                        |
+| `npm run check`        | Run full automated quality suite (`check-env` -> `typecheck` -> `lint` -> `format:check` -> `test` -> `build`) |
+| `npm run db:up`        | Start local PostgreSQL Docker container                                                                        |
+| `npm run db:down`      | Stop local PostgreSQL Docker container                                                                         |
+| `npm run db:migrate`   | Apply Prisma database migrations                                                                               |
+| `npm run db:push`      | Push Prisma schema directly to DB                                                                              |
+| `npm run db:studio`    | Launch Prisma Studio GUI                                                                                       |
+| `npm run db:generate`  | Generate Prisma Client                                                                                         |
+| `npm run cms:seed`     | Seed initial CMS admin user and sample content                                                                 |
 
 ---
 
@@ -180,17 +184,21 @@ Your app is now running locally!
 ## 🧪 Testing & Validation
 
 ### Run Unit Tests
+
 ```bash
 npm run test
 ```
 
 ### Run End-to-End Browser Tests
+
 ```bash
 npm run test:e2e
 ```
 
 ### Run Full Quality Pipeline
+
 Before pushing code or opening pull requests, run the comprehensive check pipeline:
+
 ```bash
 npm run check
 ```

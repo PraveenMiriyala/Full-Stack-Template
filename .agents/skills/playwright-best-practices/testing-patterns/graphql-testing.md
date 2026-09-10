@@ -190,11 +190,13 @@ export const test = base.extend<GraphQLFixtures>({
       },
     });
     const { data } = await loginResp.json();
-    
+
     if (!data?.login?.token) {
-      throw new Error(`Admin login failed: status ${loginResp.status()}, response: ${JSON.stringify(data)}`);
+      throw new Error(
+        `Admin login failed: status ${loginResp.status()}, response: ${JSON.stringify(data)}`
+      );
     }
-    
+
     await loginCtx.dispose();
 
     const ctx = await playwright.request.newContext({
@@ -266,12 +268,12 @@ test("fetch and update item", async ({ request }) => {
 
 ## Anti-Patterns
 
-| Don't Do This | Problem | Do This Instead |
-| --- | --- | --- |
-| Check only `response.ok()` | GraphQL returns 200 even on errors — `errors` array is the real signal | Always check both `data` and `errors` in the response body |
-| Ignore `errors` array | Validation and auth errors appear in `errors`, not HTTP status | Destructure and assert: `expect(errors).toBeUndefined()` |
-| Hardcode query strings inline everywhere | Duplicated queries are hard to maintain | Extract queries to constants or use a helper function |
-| Skip variable validation | Invalid variables cause cryptic server errors | Validate input shape before sending |
+| Don't Do This                            | Problem                                                                | Do This Instead                                            |
+| ---------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Check only `response.ok()`               | GraphQL returns 200 even on errors — `errors` array is the real signal | Always check both `data` and `errors` in the response body |
+| Ignore `errors` array                    | Validation and auth errors appear in `errors`, not HTTP status         | Destructure and assert: `expect(errors).toBeUndefined()`   |
+| Hardcode query strings inline everywhere | Duplicated queries are hard to maintain                                | Extract queries to constants or use a helper function      |
+| Skip variable validation                 | Invalid variables cause cryptic server errors                          | Validate input shape before sending                        |
 
 ## Troubleshooting
 

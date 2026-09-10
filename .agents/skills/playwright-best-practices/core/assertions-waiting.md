@@ -230,7 +230,7 @@ await page.waitForFunction(() => {
 // With arguments
 await page.waitForFunction(
   (selector) => document.querySelector(selector)?.textContent === "Ready",
-  ".status",
+  ".status"
 );
 ```
 
@@ -268,7 +268,7 @@ await expect
     {
       intervals: [1000, 2000, 5000],
       timeout: 30000,
-    },
+    }
   )
   .toBe("completed");
 

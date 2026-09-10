@@ -5,11 +5,16 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { siteConfig } from "@/config/site";
 
+import type { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: `Blog | ${siteConfig.name}`,
   description: "Latest news, articles, and updates.",
+  alternates: {
+    canonical: `${siteConfig.url}/blog`,
+  },
 };
 
 export default async function BlogIndexPage() {

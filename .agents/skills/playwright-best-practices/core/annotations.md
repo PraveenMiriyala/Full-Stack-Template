@@ -60,7 +60,7 @@ test("not on CI", async ({ page }) => {
 test.describe("Admin features", () => {
   test.skip(
     ({ browserName }) => browserName === "firefox",
-    "Firefox admin bug",
+    "Firefox admin bug"
   );
 
   test("admin dashboard", async ({ page }) => {

@@ -266,7 +266,7 @@ test("pinch zoom on canvas", async ({ page }) => {
           touches: [touch1, touch2],
           targetTouches: [touch1, touch2],
           bubbles: true,
-        }),
+        })
       );
 
       // Simulate pinch out
@@ -288,12 +288,12 @@ test("pinch zoom on canvas", async ({ page }) => {
           touches: [touch1End, touch2End],
           targetTouches: [touch1End, touch2End],
           bubbles: true,
-        }),
+        })
       );
 
       target.dispatchEvent(new TouchEvent("touchend", { bubbles: true }));
     },
-    { x: centerX, y: centerY },
+    { x: centerX, y: centerY }
   );
 
   // Verify zoom level changed
@@ -344,7 +344,7 @@ test("3D scene renders", async ({ page }) => {
       1,
       gl.RGBA,
       gl.UNSIGNED_BYTE,
-      pixels,
+      pixels
     );
     return pixels.some((p) => p > 0);
   });
@@ -377,7 +377,7 @@ test("Three.js scene interaction", async ({ page }) => {
     box!.y + box!.height / 2,
     {
       steps: 10,
-    },
+    }
   );
   await page.mouse.up();
 

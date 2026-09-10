@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { getPayloadClient } from "@/lib/payload";
 import { RenderBlocks, type BlockData } from "@/cms/renderers/RenderBlocks";
 import { siteConfig } from "@/config/site";
@@ -22,6 +23,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const { draft } = await searchParams;
   const slugString = slug.join("/");
+  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
 
   try {
     const payload = await getPayloadClient();
@@ -32,7 +34,8 @@ export async function generateMetadata({
           equals: slugString,
         },
       },
-      draft: draft === "true",
+      draft: isDraftMode,
+      overrideAccess: isDraftMode,
       limit: 1,
     });
 
@@ -66,7 +69,7 @@ export async function generateMetadata({
       title,
       description,
       alternates: {
-        canonical: seo?.canonicalUrl,
+        canonical: seo?.canonicalUrl || `${siteConfig.url}/${slugString}`,
       },
       robots,
       openGraph: {
@@ -88,6 +91,8 @@ export default async function DynamicCMSPage({
   const { slug } = await params;
   const { draft } = await searchParams;
   const slugString = slug.join("/");
+  const currentPath = `/${slugString}`;
+  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
 
   try {
     const payload = await getPayloadClient();
@@ -98,13 +103,51 @@ export default async function DynamicCMSPage({
           equals: slugString,
         },
       },
-      draft: draft === "true",
+      draft: isDraftMode,
+      overrideAccess: isDraftMode,
       limit: 1,
     });
 
     const page = result.docs[0];
 
+    // If page is not found, check Payload Redirects collection
     if (!page) {
+      const redirectMatches = await payload.find({
+        collection: "redirects",
+        where: {
+          from: {
+            equals: currentPath,
+          },
+        },
+        limit: 1,
+      });
+
+      const redirectDoc = redirectMatches.docs[0];
+      if (redirectDoc) {
+        let destinationUrl: string | undefined;
+
+        if (redirectDoc.to?.url) {
+          destinationUrl = redirectDoc.to.url;
+        } else if (redirectDoc.to?.reference) {
+          const ref = redirectDoc.to.reference;
+          if (
+            typeof ref.value === "object" &&
+            ref.value &&
+            "slug" in ref.value
+          ) {
+            destinationUrl =
+              ref.relationTo === "posts"
+                ? `/blog/${(ref.value as { slug: string }).slug}`
+                : `/${(ref.value as { slug: string }).slug}`;
+          }
+        }
+
+        // Prevent infinite redirect loops if destination matches current path
+        if (destinationUrl && destinationUrl !== currentPath) {
+          redirect(destinationUrl);
+        }
+      }
+
       notFound();
     }
 
@@ -141,7 +184,17 @@ export default async function DynamicCMSPage({
         <RenderBlocks blocks={(page.layout as unknown as BlockData[]) || []} />
       </article>
     );
-  } catch {
+  } catch (error) {
+    // Re-throw Next.js redirect/notFound exceptions so Next.js handles navigation correctly
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "digest" in error &&
+      typeof (error as { digest?: string }).digest === "string" &&
+      (error as { digest: string }).digest.startsWith("NEXT_")
+    ) {
+      throw error;
+    }
     notFound();
   }
 }

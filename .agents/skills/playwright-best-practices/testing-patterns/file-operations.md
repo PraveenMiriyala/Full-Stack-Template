@@ -112,7 +112,7 @@ type DownloadFixtures = {
   downloadDir: string;
   downloadAndVerify: (
     trigger: () => Promise<void>,
-    expectedFilename: string,
+    expectedFilename: string
   ) => Promise<string>;
 };
 
@@ -264,7 +264,7 @@ test("drag and drop file upload", async ({ page }) => {
       });
       dataTransfer.items.add(file);
     },
-    [dataTransfer, [...buffer]] as const,
+    [dataTransfer, [...buffer]] as const
   );
 
   // Dispatch drop event
