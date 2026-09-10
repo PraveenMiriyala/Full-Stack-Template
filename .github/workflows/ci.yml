@@ -13,8 +13,11 @@ jobs:
 
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=public"
+      PAYLOAD_DATABASE_URI: "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=payload"
       BETTER_AUTH_SECRET: "super-secret-development-key-32-chars-minimum-length"
       BETTER_AUTH_URL: "http://localhost:3000"
+      PAYLOAD_SECRET: "payload-secret-at-least-32-characters-long-key"
+      NEXT_PUBLIC_APP_URL: "http://localhost:3000"
       NODE_ENV: "test"
 
     steps:
