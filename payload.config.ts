@@ -39,5 +39,6 @@ export default buildConfig({
     },
     schemaName: process.env.PAYLOAD_SCHEMA_NAME || "payload",
     migrationDir: path.resolve(dirname, "src/migrations"),
+    push: false,
   }),
 });
