@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+// @ts-ignore
 import prompts from "prompts";
 
 // Pre-inject answer for prompts (so non-interactive / CI execution proceeds without blocking)
