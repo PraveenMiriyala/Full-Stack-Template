@@ -1,5 +1,9 @@
 import fs from "fs";
 import path from "path";
+import prompts from "prompts";
+
+// Pre-inject answer for prompts (so non-interactive / CI execution proceeds without blocking)
+prompts.inject([true]);
 
 // Ensure non-interactive execution for migrations
 if (!process.argv.includes("--force")) {
