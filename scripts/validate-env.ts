@@ -35,6 +35,12 @@ const envSchema = z.object({
     .url("BETTER_AUTH_URL must be a valid URL.")
     .optional()
     .default("http://localhost:3000"),
+  PAYLOAD_SECRET: z
+    .string()
+    .min(32, "PAYLOAD_SECRET must be at least 32 characters long.")
+    .optional()
+    .default("payload-secret-at-least-32-characters-long-key"),
+  PAYLOAD_DATABASE_URI: z.string().optional(),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),

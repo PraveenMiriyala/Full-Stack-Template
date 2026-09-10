@@ -1,0 +1,147 @@
+import { notFound } from "next/navigation";
+import type { Metadata } from "next";
+import { getPayloadClient } from "@/lib/payload";
+import { RenderBlocks, type BlockData } from "@/cms/renderers/RenderBlocks";
+import { siteConfig } from "@/config/site";
+
+export const dynamic = "force-dynamic";
+
+interface PageProps {
+  params: Promise<{
+    slug: string[];
+  }>;
+  searchParams: Promise<{
+    draft?: string;
+  }>;
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const { draft } = await searchParams;
+  const slugString = slug.join("/");
+
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "pages",
+      where: {
+        slug: {
+          equals: slugString,
+        },
+      },
+      draft: draft === "true",
+      limit: 1,
+    });
+
+    const page = result.docs[0];
+    if (!page) {
+      return {
+        title: "Page Not Found",
+      };
+    }
+
+    const seo = (page as Record<string, unknown>).seo as
+      | {
+          title?: string;
+          description?: string;
+          canonicalUrl?: string;
+          noIndex?: boolean;
+          noFollow?: boolean;
+          ogTitle?: string;
+          ogDescription?: string;
+        }
+      | undefined;
+
+    const title = seo?.title || (page.title as string) || siteConfig.name;
+    const description = seo?.description || siteConfig.description;
+    const robots = {
+      index: !seo?.noIndex,
+      follow: !seo?.noFollow,
+    };
+
+    return {
+      title,
+      description,
+      alternates: {
+        canonical: seo?.canonicalUrl,
+      },
+      robots,
+      openGraph: {
+        title: seo?.ogTitle || title,
+        description: seo?.ogDescription || description,
+      },
+    };
+  } catch {
+    return {
+      title: siteConfig.name,
+    };
+  }
+}
+
+export default async function DynamicCMSPage({
+  params,
+  searchParams,
+}: PageProps) {
+  const { slug } = await params;
+  const { draft } = await searchParams;
+  const slugString = slug.join("/");
+
+  try {
+    const payload = await getPayloadClient();
+    const result = await payload.find({
+      collection: "pages",
+      where: {
+        slug: {
+          equals: slugString,
+        },
+      },
+      draft: draft === "true",
+      limit: 1,
+    });
+
+    const page = result.docs[0];
+
+    if (!page) {
+      notFound();
+    }
+
+    const seo = (page as Record<string, unknown>).seo as
+      | {
+          schemaType?: string;
+          jsonLd?: string;
+        }
+      | undefined;
+
+    const schemaType = seo?.schemaType || "WebPage";
+    const jsonLdData = {
+      "@context": "https://schema.org",
+      "@type": schemaType,
+      name: page.title,
+      url: `${siteConfig.url}/${slugString}`,
+    };
+
+    return (
+      <article className="pb-16">
+        {/* Structured Data Script */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdData) }}
+        />
+        {seo?.jsonLd && (
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: seo.jsonLd }}
+          />
+        )}
+
+        {/* Render Page Layout Blocks */}
+        <RenderBlocks blocks={(page.layout as unknown as BlockData[]) || []} />
+      </article>
+    );
+  } catch {
+    notFound();
+  }
+}

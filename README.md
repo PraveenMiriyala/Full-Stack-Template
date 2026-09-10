@@ -1,12 +1,14 @@
-# Full-Stack Next.js GitHub Template Repository
+# Full-Stack Next.js 15 & Payload CMS v3 Template
 
-A production-ready, reusable full-stack web application template built with **TypeScript**, **Next.js 15 (App Router)**, **Tailwind CSS**, **shadcn/ui**, **PostgreSQL**, **Prisma ORM**, **Better Auth**, **Zod**, **Vitest**, and **Playwright**.
+A production-ready, reusable full-stack web application template built with **TypeScript**, **Next.js 15 (App Router)**, **Payload CMS v3**, **Tailwind CSS**, **shadcn/ui**, **PostgreSQL**, **Prisma ORM**, **Better Auth**, **Zod**, **Vitest**, and **Playwright**.
 
 ---
 
-## 📖 Quick Links
+## 📖 Key Documentation Links
 
-- [**SETUP.md**](SETUP.md) – Step-by-step instructions to create a new project from this template.
+- [**ARCHITECTURE.md**](ARCHITECTURE.md) – Hybrid architecture guide (Better Auth + Payload Auth, Prisma + Payload Postgres schema isolation).
+- [**PROJECT_MAP.md**](PROJECT_MAP.md) – Comprehensive map of CMS collections, page blocks, renderers, and routes.
+- [**SETUP.md**](SETUP.md) – Step-by-step instructions to create a new project from this template and setup Payload CMS.
 - [**CUSTOMIZATION.md**](CUSTOMIZATION.md) – Guide for changing branding, colors, secrets, and dependency maintenance policy.
 
 ---
@@ -14,59 +16,14 @@ A production-ready, reusable full-stack web application template built with **Ty
 ## 🚀 Tech Stack
 
 - **Framework**: Next.js 15 (App Router with `src/app`)
+- **CMS**: Payload CMS v3 (Embedded in Next.js App Router at `/admin`)
 - **Language**: TypeScript (Strict Mode)
 - **Styling**: Tailwind CSS & custom shadcn/ui components
-- **Database**: PostgreSQL (via Docker Compose) & Prisma ORM
-- **Authentication**: Better Auth with Email & Password provider + Prisma adapter
+- **Database**: PostgreSQL & Prisma ORM (Application users in `public` schema, CMS data in `payload` schema)
+- **Authentication**: Better Auth (App users) & Payload Auth (CMS Admins)
 - **Validation**: Zod schema validation for runtime env vars and forms
 - **Testing**: Vitest (Unit) & Playwright (End-to-End)
-- **Code Quality**: ESLint 9 & Prettier
 - **CI/CD**: GitHub Actions CI & Dependabot weekly update automation
-
----
-
-## 📁 Directory Structure
-
-```text
-├── .github/
-│   ├── dependabot.yml     # Dependabot configuration (weekly npm & actions updates)
-│   └── workflows/
-│       └── ci.yml         # Continuous Integration workflow (typecheck, lint, test, build)
-├── docker-compose.yml     # PostgreSQL container configuration
-├── prisma/
-│   └── schema.prisma      # Prisma schema models (User, Session, Account, Verification)
-├── scripts/
-│   └── validate-env.ts    # Environment variable validation script
-├── src/
-│   ├── app/
-│   │   ├── (auth)/        # Auth pages (sign-in, sign-up)
-│   │   ├── api/           # API routes (Better Auth handler, protected routes)
-│   │   ├── dashboard/     # Protected user dashboard (Server Component auth check)
-│   │   ├── error.tsx      # App error boundary
-│   │   ├── globals.css    # Global Tailwind styles & CSS variables
-│   │   ├── layout.tsx     # Root application layout
-│   │   ├── loading.tsx    # Global suspense loading UI
-│   │   ├── not-found.tsx  # Accessible 404 page
-│   │   └── page.tsx       # Responsive marketing homepage
-│   ├── components/        # Reusable UI component library (shadcn/ui, Navbar, Footer)
-│   ├── config/
-│   │   └── site.ts        # Centralized application name & metadata configuration
-│   ├── lib/               # Singleton utilities (prisma, auth, auth-client, env, utils)
-│   ├── schemas/           # Zod validation schemas
-│   ├── server/            # Server actions & DB helpers
-│   └── types/             # Shared TypeScript type definitions
-├── tests/
-│   ├── unit/              # Vitest unit test suites
-│   └── e2e/               # Playwright E2E browser test suites
-├── .env.example           # Placeholder environment variables
-├── CUSTOMIZATION.md       # Rename & customization checklist
-├── SETUP.md               # Template setup guide
-├── next.config.mjs
-├── package.json
-├── playwright.config.ts
-├── tsconfig.json
-└── vitest.config.ts
-```
 
 ---
 
@@ -88,5 +45,6 @@ A production-ready, reusable full-stack web application template built with **Ty
 | `npm run db:migrate`   | Execute Prisma database migrations                                                            |
 | `npm run db:push`      | Push Prisma schema changes directly to DB                                                     |
 | `npm run db:studio`    | Open interactive Prisma Studio GUI                                                            |
+| `npm run cms:seed`     | Seed initial CMS admin user and sample content                                                |
 | `npm run check-env`    | Validate environment variables                                                                |
 | `npm run check`        | Run full validation suite (`check-env`, `typecheck`, `lint`, `format:check`, `test`, `build`) |

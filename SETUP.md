@@ -1,6 +1,6 @@
-# Template Setup Guide
+# Template & Payload CMS Setup Guide
 
-This guide walks you through instantiating a new application from this GitHub Template Repository.
+This guide walks you through instantiating a new application from this GitHub Template Repository with embedded Payload CMS v3.
 
 ---
 
@@ -44,19 +44,21 @@ npm ci
    cp .env.example .env
    ```
 
-2. Generate a secure 32+ character authentication secret for Better Auth:
+2. Generate secure 32+ character authentication secrets for Better Auth and Payload CMS:
 
    ```bash
    # On macOS/Linux or Git Bash:
    openssl rand -hex 32
    ```
 
-3. Update `.env` with your project secrets and local database credentials:
+3. Update `.env` with your project secrets and database connection strings:
 
    ```env
    DATABASE_URL="postgresql://postgres:postgres@localhost:5432/my_app_db?schema=public"
-   BETTER_AUTH_SECRET="your-generated-32-char-secret-key"
+   PAYLOAD_DATABASE_URI="postgresql://postgres:postgres@localhost:5432/my_app_db?schema=payload"
+   BETTER_AUTH_SECRET="your-generated-better-auth-secret"
    BETTER_AUTH_URL="http://localhost:3000"
+   PAYLOAD_SECRET="your-generated-payload-cms-secret"
    NODE_ENV="development"
    NEXT_PUBLIC_APP_URL="http://localhost:3000"
    ```
@@ -76,38 +78,54 @@ npm ci
    npm run db:up
    ```
 
-2. Run initial Prisma database migrations:
+2. Run initial Prisma database migrations (for application user data):
 
    ```bash
    npm run db:migrate
    ```
 
 3. Generate the Prisma Client:
-
    ```bash
    npm run db:generate
    ```
 
-4. (Optional) Open Prisma Studio GUI to inspect your database:
-   ```bash
-   npm run db:studio
-   ```
-
 ---
 
-## 💻 5. Launch the Application
+## 🔑 5. Payload CMS Administrator Creation & Seeding
 
-Start the Next.js development server:
+### Option A: Automatic Seed Script
+
+Run the built-in CMS seed script to automatically create the initial administrator user (`admin@example.com` / `AdminPassword123!`), sample categories, dynamic pages, and blog posts:
 
 ```bash
-npm run dev
+npm run cms:seed
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to view your new application.
+### Option B: Manual UI First-Time Setup
+
+1. Launch the application (`npm run dev`).
+2. Navigate to [http://localhost:3000/admin](http://localhost:3000/admin).
+3. The first-time setup screen will prompt you to register the first CMS Administrator email and password.
 
 ---
 
-## 🛡️ 6. Pre-deployment Validation
+## 📝 6. Editing and Publishing Content in Payload CMS
+
+1. Access the Admin Panel at [http://localhost:3000/admin](http://localhost:3000/admin).
+2. **Creating & Publishing Pages**:
+   - Go to **Collections** > **Pages** > **Create New**.
+   - Enter Page Title and Slug (e.g. `about` or `services`).
+   - Add layout blocks (Hero, Rich Text, Image, Call to Action, Columns, FAQ, Testimonials).
+   - Fill out SEO title, meta description, and social sharing settings.
+   - Click **Save Draft** for previewing, or **Publish** to make the page live on `http://localhost:3000/slug`.
+3. **Creating Blog Posts**:
+   - Go to **Collections** > **Posts** > **Create New**.
+   - Add post content, excerpt, category tag, and cover image.
+   - Click **Publish** to render the article live on `/blog` and `/blog/your-post-slug`.
+
+---
+
+## 🛡️ 7. Pre-deployment Validation
 
 Before committing code or deploying to production, run the full validation suite:
 

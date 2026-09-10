@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && next build",
+    "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -19,17 +20,25 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:generate": "prisma generate",
+    "cms:seed": "tsx scripts/seed-cms.ts",
     "check-env": "tsx scripts/validate-env.ts",
     "check": "npm run check-env && npm run typecheck && npm run lint && npm run format:check && npm run test && npm run build"
   },
   "dependencies": {
+    "@payloadcms/db-postgres": "^3.88.0",
+    "@payloadcms/next": "^3.88.0",
+    "@payloadcms/plugin-redirects": "^3.88.0",
+    "@payloadcms/richtext-lexical": "^3.88.0",
     "@prisma/client": "^6.4.0",
     "better-auth": "^1.1.18",
     "clsx": "^2.1.1",
+    "graphql": "^16.11.0",
     "lucide-react": "^0.475.0",
     "next": "^15.1.7",
+    "payload": "^3.88.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "sharp": "^0.33.5",
     "tailwind-merge": "^3.0.1",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.24.2"
@@ -37,7 +46,6 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.0",
     "@playwright/test": "^1.50.1",
-    "@types/deep-eql": "^1.0.3",
     "@types/node": "^22.13.4",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
