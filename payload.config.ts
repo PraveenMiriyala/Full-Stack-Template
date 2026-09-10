@@ -38,5 +38,6 @@ export default buildConfig({
         process.env.PAYLOAD_DATABASE_URI || process.env.DATABASE_URL || "",
     },
     schemaName: process.env.PAYLOAD_SCHEMA_NAME || "payload",
+    migrationDir: path.resolve(dirname, "src/migrations"),
   }),
 });

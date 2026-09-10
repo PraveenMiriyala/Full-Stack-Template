@@ -39,9 +39,21 @@ const envSchema = z.object({
     .string()
     .min(32, "PAYLOAD_SECRET must be at least 32 characters long."),
   PAYLOAD_DATABASE_URI: z.string().optional(),
+  PREVIEW_SECRET: z
+    .string()
+    .min(32, "PREVIEW_SECRET must be at least 32 characters long."),
+  CMS_ADMIN_EMAIL: z.string().email("CMS_ADMIN_EMAIL must be a valid email."),
+  CMS_ADMIN_PASSWORD: z
+    .string()
+    .min(8, "CMS_ADMIN_PASSWORD must be at least 8 characters long."),
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
+  NEXT_PUBLIC_APP_URL: z
+    .string()
+    .url("NEXT_PUBLIC_APP_URL must be a valid URL.")
+    .optional()
+    .default("http://localhost:3000"),
 });
 
 try {

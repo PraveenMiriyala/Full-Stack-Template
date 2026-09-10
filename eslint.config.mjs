@@ -18,6 +18,8 @@ const eslintConfig = [
       "coverage/*",
       "playwright-report/*",
       "next-env.d.ts",
+      "scripts/patch-next-env.cjs",
+      "src/migrations/*",
     ],
   },
 ];

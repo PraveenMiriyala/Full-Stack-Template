@@ -11,12 +11,30 @@ jobs:
     name: Verify Application & Build
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: portfolio_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
       DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=public"
       PAYLOAD_DATABASE_URI: "postgresql://postgres:postgres@localhost:5432/portfolio_db?schema=payload"
       BETTER_AUTH_SECRET: "super-secret-development-key-32-chars-minimum-length"
       BETTER_AUTH_URL: "http://localhost:3000"
       PAYLOAD_SECRET: "payload-secret-at-least-32-characters-long-key"
+      PREVIEW_SECRET: "preview-secret-at-least-32-characters-long-key"
+      CMS_ADMIN_EMAIL: "admin@template.local"
+      CMS_ADMIN_PASSWORD: "Password123!"
       NEXT_PUBLIC_APP_URL: "http://localhost:3000"
       NODE_ENV: "test"
 
@@ -38,6 +56,12 @@ jobs:
 
       - name: Validate environment variables
         run: npm run check-env
+
+      - name: Run Prisma Database Migrations
+        run: npx prisma db push --skip-generate
+
+      - name: Run Payload CMS Migrations
+        run: npm run cms:migrate
 
       - name: TypeScript Type Checking
         run: npm run typecheck

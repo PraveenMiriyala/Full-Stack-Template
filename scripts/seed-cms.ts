@@ -1,12 +1,43 @@
-import { getPayload } from "payload";
-import config from "../payload.config";
+import fs from "fs";
+import path from "path";
+
+// Load .env manually if process.env is missing values (when run outside Next.js runtime)
+const envFilePath = path.resolve(process.cwd(), ".env");
+if (fs.existsSync(envFilePath)) {
+  const envContent = fs.readFileSync(envFilePath, "utf-8");
+  envContent.split("\n").forEach((line) => {
+    const trimmed = line.trim();
+    if (trimmed && !trimmed.startsWith("#")) {
+      const [key, ...values] = trimmed.split("=");
+      if (key && values.length > 0) {
+        const val = values
+          .join("=")
+          .replace(/^["']|["']$/g, "")
+          .trim();
+        if (!process.env[key.trim()]) {
+          process.env[key.trim()] = val;
+        }
+      }
+    }
+  });
+}
+
+import "./patch-next-env.cjs";
 
 async function seed() {
   console.log("🌱 Seeding Payload CMS data...");
+  const config = (await import("../payload.config")).default;
+  const { getPayload } = await import("payload");
   const payload = await getPayload({ config });
 
-  const adminEmail = process.env.CMS_ADMIN_EMAIL || "admin@template.local";
-  const adminPassword = process.env.CMS_ADMIN_PASSWORD || "ChangeMe123!";
+  const adminEmail = process.env.CMS_ADMIN_EMAIL;
+  const adminPassword = process.env.CMS_ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) {
+    throw new Error(
+      "❌ Missing CMS_ADMIN_EMAIL or CMS_ADMIN_PASSWORD environment variables for seeding."
+    );
+  }
 
   // 1. Idempotent Admin User creation
   const existingUsers = await payload.find({

@@ -1,4 +1,4 @@
-import { notFound, redirect } from "next/navigation";
+import { notFound, redirect, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 import { draftMode } from "next/headers";
 import { getPayloadClient } from "@/lib/payload";
@@ -11,19 +11,14 @@ interface PageProps {
   params: Promise<{
     slug: string[];
   }>;
-  searchParams: Promise<{
-    draft?: string;
-  }>;
 }
 
 export async function generateMetadata({
   params,
-  searchParams,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { draft } = await searchParams;
   const slugString = slug.join("/");
-  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
+  const isDraftMode = (await draftMode()).isEnabled;
 
   try {
     const payload = await getPayloadClient();
@@ -84,15 +79,11 @@ export async function generateMetadata({
   }
 }
 
-export default async function DynamicCMSPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function DynamicCMSPage({ params }: PageProps) {
   const { slug } = await params;
-  const { draft } = await searchParams;
   const slugString = slug.join("/");
   const currentPath = `/${slugString}`;
-  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
+  const isDraftMode = (await draftMode()).isEnabled;
 
   try {
     const payload = await getPayloadClient();
@@ -126,25 +117,40 @@ export default async function DynamicCMSPage({
       if (redirectDoc) {
         let destinationUrl: string | undefined;
 
-        if (redirectDoc.to?.url) {
-          destinationUrl = redirectDoc.to.url;
-        } else if (redirectDoc.to?.reference) {
-          const ref = redirectDoc.to.reference;
-          if (
-            typeof ref.value === "object" &&
-            ref.value &&
-            "slug" in ref.value
-          ) {
-            destinationUrl =
-              ref.relationTo === "posts"
-                ? `/blog/${(ref.value as { slug: string }).slug}`
-                : `/${(ref.value as { slug: string }).slug}`;
+        if (typeof redirectDoc.to === "string") {
+          destinationUrl = redirectDoc.to;
+        } else if (
+          typeof redirectDoc.to === "object" &&
+          redirectDoc.to !== null
+        ) {
+          const toObj = redirectDoc.to as Record<string, unknown>;
+          if (typeof toObj.url === "string") {
+            destinationUrl = toObj.url;
+          } else if (toObj.reference && typeof toObj.reference === "object") {
+            const ref = toObj.reference as {
+              relationTo?: string;
+              value?: unknown;
+            };
+            if (
+              typeof ref.value === "object" &&
+              ref.value &&
+              "slug" in ref.value
+            ) {
+              const slugVal = (ref.value as { slug: string }).slug;
+              destinationUrl =
+                ref.relationTo === "posts" ? `/blog/${slugVal}` : `/${slugVal}`;
+            }
           }
         }
 
         // Prevent infinite redirect loops if destination matches current path
         if (destinationUrl && destinationUrl !== currentPath) {
-          redirect(destinationUrl);
+          const isPermanent = redirectDoc.statusCode === "301";
+          if (isPermanent) {
+            permanentRedirect(destinationUrl);
+          } else {
+            redirect(destinationUrl);
+          }
         }
       }
 

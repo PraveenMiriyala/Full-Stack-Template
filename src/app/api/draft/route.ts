@@ -8,8 +8,12 @@ export async function GET(request: NextRequest) {
   const slug = searchParams.get("slug");
   const collection = searchParams.get("collection") || "pages";
 
-  // Validate preview secret token
-  if (!secret || secret !== process.env.PAYLOAD_SECRET) {
+  // Validate preview secret token using dedicated PREVIEW_SECRET
+  if (
+    !secret ||
+    !process.env.PREVIEW_SECRET ||
+    secret !== process.env.PREVIEW_SECRET
+  ) {
     return new Response("Invalid draft preview token", { status: 401 });
   }
 
@@ -22,10 +26,10 @@ export async function GET(request: NextRequest) {
 
   const redirectUrl =
     collection === "posts"
-      ? `/blog/${slug}?draft=true`
+      ? `/blog/${slug}`
       : slug === "home" || slug === "index"
-        ? "/?draft=true"
-        : `/${slug}?draft=true`;
+        ? "/"
+        : `/${slug}`;
 
   redirect(redirectUrl);
 }

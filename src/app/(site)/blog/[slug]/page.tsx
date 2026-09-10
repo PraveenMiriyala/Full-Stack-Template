@@ -13,17 +13,13 @@ interface PostPageProps {
   params: Promise<{
     slug: string;
   }>;
-  searchParams: Promise<{
-    draft?: string;
-  }>;
 }
 
 export async function generateMetadata({
   params,
-  searchParams,
 }: PostPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const { draft } = await searchParams;
+  const isDraftMode = (await draftMode()).isEnabled;
 
   try {
     const payload = await getPayloadClient();
@@ -34,7 +30,8 @@ export async function generateMetadata({
           equals: slug,
         },
       },
-      draft: draft === "true",
+      draft: isDraftMode,
+      overrideAccess: isDraftMode,
       limit: 1,
     });
 
@@ -79,13 +76,9 @@ export async function generateMetadata({
   }
 }
 
-export default async function BlogPostPage({
-  params,
-  searchParams,
-}: PostPageProps) {
+export default async function BlogPostPage({ params }: PostPageProps) {
   const { slug } = await params;
-  const { draft } = await searchParams;
-  const isDraftMode = (await draftMode()).isEnabled || draft === "true";
+  const isDraftMode = (await draftMode()).isEnabled;
 
   try {
     const payload = await getPayloadClient();
