@@ -3,7 +3,7 @@ import path from "path";
 import prompts from "prompts";
 
 // Pre-inject answer for prompts (so non-interactive / CI execution proceeds without blocking)
-prompts.inject([true]);
+prompts.inject([true, true, true]);
 
 // Ensure non-interactive execution for migrations
 if (!process.argv.includes("--force")) {
@@ -38,6 +38,7 @@ async function runMigrations() {
   const config = (await import("../payload.config")).default;
   const { getPayload } = await import("payload");
   const payload = await getPayload({ config });
+
   if ("migrate" in payload.db && typeof payload.db.migrate === "function") {
     await (
       payload.db as unknown as {
